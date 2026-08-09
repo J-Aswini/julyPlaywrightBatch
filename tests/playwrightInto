@@ -7,3 +7,12 @@ headed(ui visibility) or headless
 test -> json -> playwright 
 websocket connection - client server model
 client code converts to json
+
+getByRole
+getByText
+getByLabel
+getByPlaceholder
+getByAltText
+getByTitle
+getbyTestId
+locator
