@@ -1,0 +1,9 @@
+microsoft
+2020
+to create scripts and execution
+ts, js, python, c#
+headed(ui visibility) or headless 
+
+test -> json -> playwright 
+websocket connection - client server model
+client code converts to json
