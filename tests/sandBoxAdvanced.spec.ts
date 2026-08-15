@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-test.describe('basic sandbox', () => {
+import { test, expect, chromium } from '@playwright/test';
+test.describe('Advanced sandbox', () => {
     const advancedUrl = 'https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced';
 
     test('dynamic dropdown and bootstrap dropdown', async ({ page }) => {
@@ -41,5 +41,31 @@ test.describe('basic sandbox', () => {
 
     });
 
+
+test('Handle new tab', async () => {
+const browser = await chromium.launch();
+//browser -> context -> page
+const context = await browser.newContext();
+const page = await context.newPage();
+await page.goto(advancedUrl);
+let marks= [1,2,3,4,5,6,7,8,9,10];
+const [a,b,c] = marks
+const [newPage] = await Promise.all([context.waitForEvent('page'), page.getByTestId('popup-link').click()]);
+await expect(newPage).toHaveURL('https://playwright-mastery-academy-app.vercel.app/practice/popup');
+await expect(newPage.getByText('Popup Opened Successfully')).toBeVisible();
+})
+
+
+test('Handle new tab using href attr value', async () => {
+const browser = await chromium.launch();
+//browser -> context -> page
+const context = await browser.newContext();
+const page = await context.newPage();
+await page.goto(advancedUrl);
+const href = await page.getByTestId('popup-right-click-link').getAttribute('href');
+const page1= await context.newPage();
+await page1.goto(`https://playwright-mastery-academy-app.vercel.app${href}`);
+ await expect(page1.getByText('Popup Opened Successfully')).toBeVisible();
+})
 }
 )
