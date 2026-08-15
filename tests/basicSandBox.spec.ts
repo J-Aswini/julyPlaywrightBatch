@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('basic sandbox', () => {
   const baseUrl = 'https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic';
+  const advancedUrl = 'https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced';
   test('Click, double click, hover, tooltip, static dropdown', async ({ page }) => {
     await page.goto(baseUrl);
     await page.getByTestId('single-click-btn').click();
@@ -59,13 +60,42 @@ test.describe('basic sandbox', () => {
     const attributeValue = await page.getByTestId('extract-inputvalue-target').getAttribute('class');
     console.log('Extracted attribute value for class:', attributeValue);
 
-    const  allInnerText = await page.getByTestId('extract-list').allInnerTexts();
+    const allInnerText = await page.getByTestId('extract-list').allInnerTexts();
     console.log('Extracted all innerTexts:', allInnerText);
 
-     const  allTextContent = await page.getByTestId('extract-list').allTextContents();
+    const allTextContent = await page.getByTestId('extract-list').allTextContents();
     console.log('Extracted all textContents:', allTextContent);
   });
 
 
+  test('element state verification', async ({ page }) => {
+    await page.goto(baseUrl);
+    const stateCheck = await page.getByTestId('remember-checkbox').isChecked();
+    //isDisabled, isEditable, isEnabled, isHidden, isVisible, isChecked
+    console.log('Is checkbox checked:', stateCheck);
+    if (stateCheck === false) {
+      await page.getByTestId('remember-checkbox').check();
+    }
+    const stateAfterCheck = await page.getByTestId('remember-checkbox').isChecked();
+    console.log('Is checkbox checked after checking:', stateAfterCheck);
+  })
+
+  test('verify the dropdown state', async ({ page }) => {
+    await page.goto(advancedUrl);
+    const dropdownState = await page.getByTestId('dynamic-option-select').isDisabled();
+    console.log('Is dropdown enabled:', dropdownState);
+    const isVisible = await page.getByTestId('hidden-dropdown-select').isVisible();
+    console.log('Is dropdown visible:', isVisible);
+        await expect(page.getByText('Hidden dropdown selected: Hidden - Advanced.')).not.toBeVisible();
+    if (isVisible === false) {
+      await page.getByTestId('hidden-dropdown-toggle-btn').click();
+    }
+
+    const isVisibleAfterClick = await page.getByTestId('hidden-dropdown-select').isVisible();
+    console.log('Is dropdown visible after clicking toggle button:', isVisibleAfterClick);
+    await page.getByTestId('hidden-dropdown-select').selectOption('Hidden - Advanced');
+    await expect(page.getByText('Hidden dropdown selected: Hidden - Advanced.')).toBeVisible();
+  });
   
+
 })
