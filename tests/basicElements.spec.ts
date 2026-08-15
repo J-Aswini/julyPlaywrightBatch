@@ -59,3 +59,13 @@ test('Verify actions using getByTestId method', async ({ page }) => {
     await page.goto('C:/julyPlaywrightBatch/locatorPractice.html')
     await page.getByTestId('submit-form').click()
 })
+
+test('Verify locator selection using filter method', async ({ page }) => {
+    await page.goto('file:///C:/julyPlaywrightBatch/complexLocatorPractice.html')
+    await page.locator('tr').filter({ hasText: 'arun@acme.com' }).first().click()
+})
+
+test('Verify chaining method', async ({ page }) => {
+    await page.goto('file:///C:/julyPlaywrightBatch/complexLocatorPractice.html')
+    await page.locator('tr').locator('td').getByRole('button',{ name: 'View' }).nth(2).click()
+})
