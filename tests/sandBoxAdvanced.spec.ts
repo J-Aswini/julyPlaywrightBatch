@@ -124,9 +124,55 @@ test.describe('Advanced sandbox', () => {
             page.waitForEvent('download'),
             page.getByTestId('download-pdf-btn').click()
         ]);
-       const fileName = await download.suggestedFilename();
-       console.log("fileName =>" + fileName);
-       await download.saveAs(`downloads/${fileName}`);
+        const fileName = await download.suggestedFilename();
+        console.log("fileName =>" + fileName);
+        await download.saveAs(`downloads/${fileName}`);
     })
+
+
+    //practice-iframe
+    test('handling iframe', async ({ page }) => {
+        await page.goto(advancedUrl);
+        const frame = page.frameLocator('#practice-iframe');
+        await frame.locator('#frame-input').fill('playwright');
+        await frame.locator('[id="frame-save"]').click();
+        await expect(frame.getByText('Result: playwright saved')).toBeVisible();
+
+    });
+
+
+    test('handling shadow dom', async ({ page }) => {
+        await page.goto(advancedUrl);
+        //shadow-host
+        const frame = page.getByTestId('shadow-host');
+        await frame.locator('#shadow-input').fill('playwright');
+        await frame.locator('[id="shadow-save"]').click();
+        await expect(frame.getByText('Result: playwright saved')).toBeVisible();
+    });
+
+
+    test('handling date components', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByTestId('practice-date-picker').type('06-11-2015');
+        const datePickerValue = await page.getByTestId('practice-date-picker').inputValue();
+        console.log("datePickerValue =>" + datePickerValue);
+        await expect(page.getByTestId('practice-date-picker')).toHaveValue('2015-11-06');
+    });
+
+
+    test('handling date component using js method', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByTestId('practice-date-picker').evaluate((dom, value) => {
+            const html = dom as HTMLInputElement;
+            html.value = value as string;
+            html.dispatchEvent(new Event('input'));
+            html.dispatchEvent(new Event('change'));
+        }, '2015-11-06')
+        await expect(page.getByTestId('practice-date-picker')).toHaveValue('2015-11-06');
+    });
+
+
+
+    
 }
 )
