@@ -99,5 +99,34 @@ test.describe('Advanced sandbox', () => {
         await page.getByTestId('drag-source').dragTo(page.getByTestId('drop-target'));
         await expect(page.getByText('Drop completed successfully.')).toBeVisible();
     });
+
+
+    test('upload file', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByTestId('file-upload-input').setInputFiles('uploads/practice-data.csv');
+        await expect(page.getByText('uploaded successfully.')).toBeVisible();
+        //getByText supports for partial text match
+    });
+
+
+
+    test('upload mutiple file', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByTestId('multi-file-upload-input').setInputFiles(['uploads/practice-data.csv', 'uploads/practice-report.pdf']);
+        await expect(page.getByText('2 files uploaded: practice-data.csv, practice-report.pdf.')).toBeVisible();
+        //getByText supports for partial text match
+    });
+
+
+    test(' download file', async ({ page }) => {
+        await page.goto(advancedUrl);
+        const [download] = await Promise.all([
+            page.waitForEvent('download'),
+            page.getByTestId('download-pdf-btn').click()
+        ]);
+       const fileName = await download.suggestedFilename();
+       console.log("fileName =>" + fileName);
+       await download.saveAs(`downloads/${fileName}`);
+    })
 }
 )
