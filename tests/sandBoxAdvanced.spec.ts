@@ -42,30 +42,62 @@ test.describe('Advanced sandbox', () => {
     });
 
 
-test('Handle new tab', async () => {
-const browser = await chromium.launch();
-//browser -> context -> page
-const context = await browser.newContext();
-const page = await context.newPage();
-await page.goto(advancedUrl);
-let marks= [1,2,3,4,5,6,7,8,9,10];
-const [a,b,c] = marks
-const [newPage] = await Promise.all([context.waitForEvent('page'), page.getByTestId('popup-link').click()]);
-await expect(newPage).toHaveURL('https://playwright-mastery-academy-app.vercel.app/practice/popup');
-await expect(newPage.getByText('Popup Opened Successfully')).toBeVisible();
-})
+    test('Handle new tab', async () => {
+        const browser = await chromium.launch();
+        //browser -> context -> page
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        await page.goto(advancedUrl);
+        let marks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const [a, b, c] = marks
+        const [newPage] = await Promise.all([context.waitForEvent('page'), page.getByTestId('popup-link').click()]);
+        await expect(newPage).toHaveURL('https://playwright-mastery-academy-app.vercel.app/practice/popup');
+        await expect(newPage.getByText('Popup Opened Successfully')).toBeVisible();
+    })
 
 
-test('Handle new tab using href attr value', async () => {
-const browser = await chromium.launch();
-//browser -> context -> page
-const context = await browser.newContext();
-const page = await context.newPage();
-await page.goto(advancedUrl);
-const href = await page.getByTestId('popup-right-click-link').getAttribute('href');
-const page1= await context.newPage();
-await page1.goto(`https://playwright-mastery-academy-app.vercel.app${href}`);
- await expect(page1.getByText('Popup Opened Successfully')).toBeVisible();
-})
+    test('Handle new tab using href attr value', async () => {
+        const browser = await chromium.launch();
+        //browser -> context -> page
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        await page.goto(advancedUrl);
+        const href = await page.getByTestId('popup-right-click-link').getAttribute('href');
+        const page1 = await context.newPage();
+        await page1.goto(`https://playwright-mastery-academy-app.vercel.app${href}`);
+        await expect(page1.getByText('Popup Opened Successfully')).toBeVisible();
+    })
+
+    test('isolated context', async () => {
+        const browser = await chromium.launch();
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        await page.goto('https://testcms.reco-claims.ca/Login')
+        await page.getByRole('textbox', { name: 'Username' }).fill('info+programmanager@xlgclaims.com')
+        await page.getByRole('textbox', { name: 'Password' }).fill('Test1234!')
+        await page.getByRole('button', { name: 'Login' }).click()
+        await page.waitForTimeout(5000)
+
+        const contextTwo = await browser.newContext();
+        const pageTwo = await contextTwo.newPage();
+        await pageTwo.goto('https://testcms.reco-claims.ca/Login')
+        await pageTwo.getByRole('textbox', { name: 'Username' }).fill('info+programmanager@xlgclaims.com')
+        await pageTwo.getByRole('textbox', { name: 'Password' }).fill('Test1234!')
+        await pageTwo.getByRole('button', { name: 'Login' }).click()
+        await pageTwo.waitForTimeout(5000)
+
+        const cookie = await context.cookies();
+        console.log("cookie =>" + JSON.stringify(cookie));
+        const cookieTwo = await contextTwo.cookies();
+        console.log("cookieTwo =>" + JSON.stringify(cookieTwo));
+
+    })
+
+
+    test('drag and drop', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByTestId('drag-source').dragTo(page.getByTestId('drop-target'));
+        await expect(page.getByText('Drop completed successfully.')).toBeVisible();
+    });
 }
 )
