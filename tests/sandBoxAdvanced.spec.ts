@@ -173,6 +173,62 @@ test.describe('Advanced sandbox', () => {
 
 
 
-    
+    test('wait commands', async ({ page }) => {
+        await page.goto(advancedUrl);
+        // //waitForUrl
+        // //wait-navigation-link
+        // await page.getByTestId('wait-navigation-link').click();
+        // await page.waitForURL('https://playwright-mastery-academy-app.vercel.app/practice/popup?source=waitfornavigation')
+        // await expect(page.getByText('Popup Opened Successfully')).toBeVisible({ timeout: 10000 });
+
+        // //waitForResponse
+        // //wait-response-btn
+        // await page.goBack()
+        // await page.getByTestId('wait-response-btn').click()
+        // await page.waitForResponse('https://playwright-mastery-academy-app.vercel.app/api/practice/waits-status')
+        // await expect(page.getByText('Trigger API Response Completed')).toBeVisible();
+        // await page.getByTestId('wait-response-btn').click()
+        // await page.getByText('Trigger API Response Completed').waitFor({ state: 'visible' })
+        // //attached detached visible hidden
+
+        // await page.getByTestId('wait-response-btn').click()
+
+
+        await page.getByTestId('wait-response-btn').click()
+        await page.waitForSelector("//*[contains(text(), 'Trigger API Response Completed')]")
+        await expect(page.getByText('Trigger API Response Completed')).toBeVisible();
+        await page.getByTestId('wait-loadstate-practice-load-btn').click()
+        await page.waitForLoadState('load')
+        //Dom ready, image load
+        // Test load State: Completed
+        await expect(page.getByText('Test load State: Completed')).toBeVisible()
+
+
+
+        await page.getByTestId('wait-loadstate-practice-dom-btn').click()
+        await page.waitForLoadState('domcontentloaded')
+        await expect(page.getByTestId('wait-result-domcontentloaded')).toBeVisible()
+        await page.getByTestId('wait-loadstate-practice-networkidle-btn').click()
+        await page.waitForLoadState('networkidle')
+        await expect(page.getByText('Completed after')).toBeVisible()
+    });
+
+    test('mouse action', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByTestId('mouse-downup-target').hover()
+        await page.mouse.down()
+        await expect(page.getByText('Mouse down detected.')).toBeVisible()
+        await page.mouse.up()
+        await expect(page.getByText('Mouse down + up detected.')).toBeVisible()
+        await page.getByTestId('mouse-rightclick-target').click({ button: 'right' })
+        await expect(page.getByText('Right click detected on target.')).toBeVisible()
+        await page.getByTestId("mouse-wheel-target").scrollIntoViewIfNeeded()
+        await page.waitForTimeout(2000)
+        await page.getByTestId("mouse-wheel-target").hover()
+        await page.mouse.wheel(0, 300)
+        await page.waitForTimeout(2000)
+        await expect(page.getByText('Mouse wheel scrolled down.')).toBeVisible()
+    });
+    //click , dblclick, hover, check, uncheck, dragTo
 }
 )
