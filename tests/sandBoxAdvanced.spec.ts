@@ -7,7 +7,7 @@ test.describe('Advanced sandbox', () => {
         await page.goto(advancedUrl);
         await page.getByTestId('dynamic-group-select').selectOption('Locators');
         await page.getByTestId('dynamic-option-select').selectOption('getByRole + name');
-        await expect(page.getByText('Dynamic dropdown selected: getByRole + name.')).toBeVisible();
+        await expect.soft(page.getByText('123Dynamic dropdown selected: getByRole + name.')).toBeVisible();
         //bootstap dropdown with select and option tags
         await page.getByTestId('bootstrap-dropdown-trigger').click();
         await page.getByText('Weekday Batch').click();
@@ -104,6 +104,7 @@ test.describe('Advanced sandbox', () => {
     test('upload file', async ({ page }) => {
         await page.goto(advancedUrl);
         await page.getByTestId('file-upload-input').setInputFiles('uploads/practice-data.csv');
+        // uploads/practice-data.csv
         await expect(page.getByText('uploaded successfully.')).toBeVisible();
         //getByText supports for partial text match
     });
@@ -230,5 +231,58 @@ test.describe('Advanced sandbox', () => {
         await expect(page.getByText('Mouse wheel scrolled down.')).toBeVisible()
     });
     //click , dblclick, hover, check, uncheck, dragTo
+
+    test('element screenshot and page screenshot', async ({ page }) => {
+        await page.goto(advancedUrl);
+        await page.getByAltText('Playwright Mastery Academy').screenshot({ path: 'screenshots/sandbox-advanced.png' })
+        await expect(page.getByAltText('Playwright Mastery Academy')).toHaveAttribute('width', "290")
+        await expect(page.getByAltText('Playwright Mastery Academy')).toHaveClass('h-12 w-auto sm:h-20')
+        //h-12
+        await page.screenshot({ path: 'screenshots/page.png', fullPage: true })
+
+    });
+
+    test('retrying and non retrying assertion', async ({ page }) => {
+        /* 
+        visibility & state
+        toBeVisible()
+        toBeHidden()
+        toBeEnabled()
+        toBeDisabled()
+        toBeEditable()
+        toBeChecked()
+        toBeFocused()
+        // text
+        expect('locator').toHaveText('exact text')
+        expect('locator').toContainTex('partial text')
+        expect('locator').toHaveValue('input value')
+        await expect(page.getByAltText('Playwright Mastery Academy')).not.toHaveAttribute('width', "290")
+        await expect(page.getByAltText('Playwright Mastery Academy')).toHaveAttribute('width', "290")
+        expect('locator').toHaveCount(1)
+        
+        page
+        expect('locator').toHaveTitle('')
+        expect('page').toHaveUrl('')
+
+        non retrying assertion
+        const number = 6
+        expect(number).toBe(6)
+        expect(number).toEqual(6)
+                expect(number).toStrictEqual(6)
+                expect(true).toBeTruthy()
+                expect(false).toBeFalsy()
+                expect(null).toBenull()
+                expect(undefined).toBeUndefined()
+                expect(10).toBeGreaterThan(17)
+                expect(10).toBeGreaterThanOrEqual(18)
+                expect(10).toBeLessThan(17)
+                expect(10).toBeLessThanOrEqual(18)
+                let a =[10,20,30]
+                expect(10).toContain(a)
+        */
+    });
+
 }
+
+
 )
