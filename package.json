@@ -13,6 +13,9 @@
     "@types/node": "^26.2.0"
   },
   "dependencies": {
-    "dotenv": "^17.4.2"
+    "csv-parse": "^7.0.2",
+    "dotenv": "^17.4.2",
+    "fs": "^0.0.1-security",
+    "xlsx": "^0.18.5"
   }
 }
